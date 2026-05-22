@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canada Economic Outlook 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --red: #C8102E;
+    --red-light: #F5E6E9;
+    --white: #F7F5F0;
+    --ink: #1A1A1A;
+    --muted: #6B6B6B;
+    --border: #E0DCDA;
+    --surface: #FFFFFF;
+    --accent: #D4AF37;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  header {
+    background: var(--red);
+    color: #fff;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .maple-bg {
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 340px;
+    height: 340px;
+    opacity: 0.06;
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3.5rem 2rem 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 0.75rem;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .header-sub {
+    font-size: 1rem;
+    opacity: 0.8;
+    max-width: 520px;
+    font-weight: 300;
+  }
+
+  .header-date {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+
+  nav {
+    background: var(--ink);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  nav a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.2rem;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  nav a:hover { color: #fff; border-bottom-color: var(--red); }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
+  }
+
+  /* KPI strip */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    padding: 1.25rem 1.5rem;
+    position: relative;
+  }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .kpi-card.green::before { background: #2a8a55; }
+  .kpi-card.amber::before { background: var(--accent); }
+  .kpi-card.red::before { background: var(--red); }
+  .kpi-card.blue::before { background: #1d5fa0; }
+  .kpi-card.neutral::before { background: #888; }
+
+  .kpi-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .kpi-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  /* Section headings */
+  .section {
+    margin-bottom: 3.5rem;
+    scroll-margin-top: 50px;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-label h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-tag {
+    display: inline-block;
+    background: var(--red);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Chart cards */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .chart-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 680px) {
+    .two-col { grid-template-columns: 1fr; }
+  }
+
+  /* Analysis cards */
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .analysis-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+
+  .analysis-card .icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 1rem;
+  }
+
+  .icon.risk { background: var(--red-light); }
+  .icon.oppt { background: #e8f5f0; }
+  .icon.warn { background: #fff8e5; }
+
+  .analysis-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .analysis-card p {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  /* Risk-opportunity bar */
+  .verdict-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.75rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .verdict-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .verdict-track {
+    flex: 1;
+    min-width: 200px;
+    height: 8px;
+    background: linear-gradient(to right, #c8102e 0%, #d4af37 50%, #2a8a55 100%);
+    border-radius: 8px;
+    position: relative;
+  }
+
+  .verdict-needle {
+    position: absolute;
+    top: -5px;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 18px;
+    background: var(--ink);
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    left: 38%;
+  }
+
+  .verdict-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+
+  /* Province table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  thead th {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+  }
+
+  tbody td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--white); }
+
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  .pill.up { background: #e3f5ec; color: #1a6b3a; }
+  .pill.down { background: var(--red-light); color: #991020; }
+  .pill.neutral { background: #f0f0f0; color: #555; }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .legend span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-sq {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    padding: 2rem;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  footer strong { color: rgba(255,255,255,0.7); }
+</style>
+</head>
+<body>
+
+<header>
+  <svg class="maple-bg" viewBox="0 0 200 200" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 10 L108 50 L145 35 L125 68 L165 72 L135 95 L160 130 L120 115 L115 155 L100 125 L85 155 L80 115 L40 130 L65 95 L35 72 L75 68 L55 35 L92 50 Z"/>
+  </svg>
+  <div class="header-inner">
+    <p class="eyebrow">Economic Analysis Report</p>
+    <h1>Canada Economic<br>Outlook 2026</h1>
+    <p class="header-sub">A comprehensive look at Canada's economic performance amid trade tensions, shifting labour markets, and evolving monetary policy.</p>
+    <span class="header-date">Updated May 2026 &nbsp;·&nbsp; Based on Statistics Canada, Bank of Canada &amp; IMF data</span>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#overview">Overview</a>
+    <a href="#growth">GDP &amp; Growth</a>
+    <a href="#labour">Labour Market</a>
+    <a href="#prices">Inflation</a>
+    <a href="#trade">Trade</a>
+    <a href="#housing">Housing</a>
+    <a href="#analysis">Analysis</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- KPI Strip -->
+  <section id="overview" class="section" style="margin-top:2rem">
+    <div class="kpi-grid">
+      <div class="kpi-card blue">
+        <div class="kpi-label">GDP (Nominal)</div>
+        <div class="kpi-val">$2.42T</div>
+        <div class="kpi-sub">CAD · 2026 est.</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">GDP Growth</div>
+        <div class="kpi-val">1.2%</div>
+        <div class="kpi-sub">2026 BoC forecast</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">Inflation (CPI)</div>
+        <div class="kpi-val">2.4%</div>
+        <div class="kpi-sub">March 2026 (up from 1.8%)</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">Unemployment</div>
+        <div class="kpi-val">6.7%</div>
+        <div class="kpi-sub">March 2026 · down from 7.1%</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">BoC Policy Rate</div>
+        <div class="kpi-val">2.25%</div>
+        <div class="kpi-sub">Held — March 18, 2026</div>
+      </div>
+      <div class="kpi-card red">
+        <div class="kpi-label">Budget Deficit</div>
+        <div class="kpi-val">~$80B</div>
+        <div class="kpi-sub">~2.5% of GDP</div>
+      </div>
+    </div>
+
+    <!-- Sentiment verdict bar -->
+    <div class="verdict-bar">
+      <span class="verdict-label">Economic outlook</span>
+      <div class="verdict-track">
+        <div class="verdict-needle"></div>
+      </div>
+      <span class="verdict-text">Cautiously Mixed — Resilience amid headwinds</span>
+    </div>
+  </section>
+
+  <!-- GDP Section -->
+  <section id="growth" class="section">
+    <div class="section-label">
+      <span class="section-tag">GDP &amp; Growth</span>
+      <h2>Economic Output</h2>
+    </div>
+    <div class="two-col">
+      <div class="chart-card">
+        <div class="chart-title">Real GDP growth rate (%) — Historical &amp; Forecast</div>
+        <div class="legend">
+          <span><span class="legend-sq" style="background:#C8102E"></span>Actual</span>
+          <span><span class="legend-sq" style="background:#C8102E; opacity:0.4;"></span>Forecast</span>
+        </div>
+        <div style="position:relative;height:220px;">
+          <canvas id="gdpChart" role="img" aria-label="Bar chart of Canada real GDP growth from 2021 to 2028, showing recovery after COVID, slowdown in 2025 and gradual improvement forecast">Canada GDP growth: 2021 5.3%, 2022 3.8%, 2023 1.2%, 2024 1.5%, 2025 1.4%, 2026F 1.2%, 2027F 1.6%, 2028F 1.7%</canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">G7 GDP growth comparison — 2026 IMF forecast (%)</div>
+        <div class="legend">
+          <span><span class="legend-sq" style="background:#C8102E"></span>Canada</span>
+          <span><span class="legend-sq" style="background:#BBBBBB"></span>G7 peers</span>
+        </div>
+        <div style="position:relative;height:220px;">
+          <canvas id="g7Chart" role="img" aria-label="Horizontal bar chart comparing 2026 GDP growth forecasts across G7 nations. Canada ranks second.">Canada 1.2%, USA 1.8%, Japan 0.5%, Germany 0.3%, France 0.8%, Italy 0.5%, UK 1.0%</canvas>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:6px;padding:0.85rem 1rem;">
+      The IMF projects Canada to post the <strong style="color:var(--ink)">second-fastest growth in the G7</strong> over 2026–2027. However, the Bank of Canada notes GDP contracted 0.6% in Q4 2025, and the economy is currently operating with excess supply, weighing on the near-term outlook.
+    </p>
+  </section>
+
+  <!-- Labour Market -->
+  <section id="labour" class="section">
+    <div class="section-label">
+      <span class="section-tag">Labour Market</span>
+      <h2>Employment Trends</h2>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Unemployment rate (%) — 2024 to 2026</div>
+      <div class="legend">
+        <span><span class="legend-sq" style="background:#C8102E"></span>National rate</span>
+        <span><span class="legend-sq" style="background:#D4AF37; border: 1px dashed #999;"></span>Youth rate (15–24)</span>
+      </div>
+      <div style="position:relative;height:240px;">
+        <canvas id="unemployChart" role="img" aria-label="Line chart of Canada unemployment rate from early 2024 to early 2026, showing a rise and then gradual decline. Youth unemployment is significantly higher.">National unemployment peaked at 7.1% in Sept 2025, fell to 6.7% by March 2026. Youth unemployment above 14%.</canvas>
+      </div>
+    </div>
+    <div class="analysis-grid" style="margin-top:1.5rem">
+      <div class="analysis-card">
+        <div class="icon oppt">💼</div>
+        <h3>Job creation outpacing the US</h3>
+        <p>Since early 2025, Canada added nearly 3x as many jobs per capita (3.4 per 1,000) as the United States (1.2 per 1,000), with the majority in the private sector.</p>
+      </div>
+      <div class="analysis-card">
+        <div class="icon warn">⚠️</div>
+        <h3>Youth unemployment a concern</h3>
+        <p>The 15–24 age cohort saw employment fall by 64,000 in Jan–Feb 2026 alone, pushing youth unemployment back above 14% — the highest in years outside the pandemic.</p>
+      </div>
+      <div class="analysis-card">
+        <div class="icon risk">📉</div>
+        <h3>Immigration slowdown biting</h3>
+        <p>Federal pullback on non-permanent residents and international students is shrinking the labour force, projected to be ~0.2% smaller by end-2026, dampening both hiring and demand.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Inflation -->
+  <section id="prices" class="section">
+    <div class="section-label">
+      <span class="section-tag">Inflation &amp; Monetary Policy</span>
+      <h2>Prices &amp; Interest Rates</h2>
+    </div>
+    <div class="two-col">
+      <div class="chart-card">
+        <div class="chart-title">CPI inflation (%) — monthly trend</div>
+        <div class="legend">
+          <span><span class="legend-sq" style="background:#1d5fa0"></span>Headline CPI</span>
+          <span><span class="legend-sq" style="background:#D4AF37"></span>BoC 2% target</span>
+        </div>
+        <div style="position:relative;height:220px;">
+          <canvas id="cpiChart" role="img" aria-label="Line chart of Canada CPI inflation from mid-2025 to early 2026, showing dip below 2% then rise above it due to Middle East conflict.">Inflation: fell to 1.8% Feb 2026, then rose to 2.4% by March 2026 amid Middle East oil shock.</canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Bank of Canada policy rate (%) — recent cuts</div>
+        <div class="legend">
+          <span><span class="legend-sq" style="background:#C8102E"></span>Policy rate</span>
+        </div>
+        <div style="position:relative;height:220px;">
+          <canvas id="rateChart" role="img" aria-label="Step line chart of Bank of Canada policy rate, cut from 5% in mid-2024 to 2.25% and held through 2026.">Policy rate cut from 5% in mid-2024 to 2.25% by early 2026, then held steady.</canvas>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-left:3px solid #D4AF37;border-radius:6px;padding:0.85rem 1rem;">
+      Inflation rose from <strong style="color:var(--ink)">1.8% in February to 2.4% in March 2026</strong>, driven by sharply higher energy prices following the Middle East conflict. Core inflation held just above 2%. The Bank of Canada paused its cutting cycle at 2.25%, balancing inflation risk against weak demand.
+    </p>
+  </section>
+
+  <!-- Trade -->
+  <section id="trade" class="section">
+    <div class="section-label">
+      <span class="section-tag">International Trade</span>
+      <h2>Trade &amp; Tariff Impact</h2>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Export composition — Canada's key goods exports (2024)</div>
+      <div class="legend">
+        <span><span class="legend-sq" style="background:#C8102E"></span>Energy</span>
+        <span><span class="legend-sq" style="background:#1d5fa0"></span>Autos &amp; parts</span>
+        <span><span class="legend-sq" style="background:#2a8a55"></span>Metals &amp; minerals</span>
+        <span><span class="legend-sq" style="background:#D4AF37"></span>Agri-food</span>
+        <span><span class="legend-sq" style="background:#888"></span>Other</span>
+      </div>
+      <div style="position:relative;height:240px;">
+        <canvas id="exportChart" role="img" aria-label="Horizontal bar chart showing Canada's key goods exports by sector. Energy is the largest, followed by autos, metals, agriculture, and other goods.">Energy 27%, Autos and parts 17%, Metals and minerals 14%, Agri-food 11%, Other 31%</canvas>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-top:1.5rem;">
+      <div class="chart-title" style="margin-bottom:1rem">Provincial exposure to US tariffs</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Province / Region</th>
+            <th>Key exposed sectors</th>
+            <th>Tariff risk</th>
+            <th>Outlook</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Ontario</strong></td>
+            <td>Autos, steel, manufacturing</td>
+            <td><span class="pill down">High</span></td>
+            <td>Below-average growth</td>
+          </tr>
+          <tr>
+            <td><strong>Quebec</strong></td>
+            <td>Aluminum, aerospace, forestry</td>
+            <td><span class="pill down">High</span></td>
+            <td>Stable — housing resilient</td>
+          </tr>
+          <tr>
+            <td><strong>Alberta</strong></td>
+            <td>Energy (limited tariff exposure)</td>
+            <td><span class="pill neutral">Low–Med</span></td>
+            <td>Above-average growth</td>
+          </tr>
+          <tr>
+            <td><strong>BC</strong></td>
+            <td>Lumber, copper, mining</td>
+            <td><span class="pill down">High</span></td>
+            <td>Subdued — housing correction</td>
+          </tr>
+          <tr>
+            <td><strong>Prairies (MB/SK)</strong></td>
+            <td>Agriculture, potash</td>
+            <td><span class="pill neutral">Moderate</span></td>
+            <td>Steady — diversified</td>
+          </tr>
+          <tr>
+            <td><strong>Atlantic Canada</strong></td>
+            <td>Fisheries, forestry</td>
+            <td><span class="pill neutral">Moderate</span></td>
+            <td>Modest growth</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:6px;padding:0.85rem 1rem;margin-top:1rem;">
+      The average US tariff rate on Canadian goods stands at <strong style="color:var(--ink)">6–7%</strong> — below the 17% applied to many other nations. While most CUSMA-compliant goods are exempt from reciprocal tariffs, key industries like autos (up to 25%), steel, aluminum, and forestry products continue to face elevated duties. Canada has run a <strong style="color:var(--ink)">current account deficit for 17 consecutive years.</strong>
+    </p>
+  </section>
+
+  <!-- Housing -->
+  <section id="housing" class="section">
+    <div class="section-label">
+      <span class="section-tag">Real Estate</span>
+      <h2>Housing Market</h2>
+    </div>
+    <div class="two-col">
+      <div class="chart-card">
+        <div class="chart-title">National average home price index (2021 = 100)</div>
+        <div class="legend">
+          <span><span class="legend-sq" style="background:#1d5fa0"></span>Price index</span>
+          <span><span class="legend-sq" style="background:#C8102E; opacity:0.5;"></span>Forecast</span>
+        </div>
+        <div style="position:relative;height:220px;">
+          <canvas id="houseChart" role="img" aria-label="Line chart of Canadian home price index from 2021 to 2026, showing a peak in 2022, correction, and gradual stabilization.">Home prices peaked in early 2022 then corrected. Expected to remain soft in 2026 before recovering in 2027.</canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Housing starts — annual (thousands of units)</div>
+        <div class="legend">
+          <span><span class="legend-sq" style="background:#2a8a55"></span>Urban starts</span>
+        </div>
+        <div style="position:relative;height:220px;">
+          <canvas id="startsChart" role="img" aria-label="Bar chart of Canadian housing starts from 2020 to 2026. Starts peaked around 2021-2022 and are expected to decline in 2026.">Housing starts: 2020 218k, 2021 272k, 2022 261k, 2023 224k, 2024 245k, 2025est 218k, 2026F 195k</canvas>
+        </div>
+      </div>
+    </div>
+    <div class="analysis-grid" style="margin-top:0.5rem">
+      <div class="analysis-card">
+        <div class="icon risk">🏘️</div>
+        <h3>Ontario &amp; BC softening most</h3>
+        <p>National average home prices are expected to be flat to slightly lower in 2026, with Ontario and BC seeing the largest corrections due to reduced investor activity and high valuations.</p>
+      </div>
+      <div class="analysis-card">
+        <div class="icon oppt">📈</div>
+        <h3>Montreal holds stronger</h3>
+        <p>Quebec's housing market — particularly Montreal and Quebec City — is showing more resilience than the national average, supported by stable buyer sentiment and more moderate price levels.</p>
+      </div>
+      <div class="analysis-card">
+        <div class="icon warn">🔨</div>
+        <h3>Starts at risk of declining</h3>
+        <p>The Canadian Home Builders Association's Housing Market Index sank to record lows in Q3 2025. Residential construction (~8% of GDP) faces headwinds from high costs and tariff-driven material price pressures.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Analysis -->
+  <section id="analysis" class="section">
+    <div class="section-label">
+      <span class="section-tag">Analysis</span>
+      <h2>Key Risks &amp; Opportunities</h2>
+    </div>
+    <div class="analysis-grid">
+      <div class="analysis-card" style="border-left:3px solid var(--red)">
+        <div class="icon risk">🇺🇸</div>
+        <h3>US trade uncertainty</h3>
+        <p>Ongoing tariffs on autos, steel, aluminum and forestry are depressing exports and business investment. CUSMA renewal review by July 2026 adds further policy uncertainty to an already fragile outlook.</p>
+      </div>
+      <div class="analysis-card" style="border-left:3px solid var(--red)">
+        <div class="icon risk">🛢️</div>
+        <h3>Middle East oil shock</h3>
+        <p>The regional conflict has pushed WTI to ~US$80/barrel, inflating gasoline prices and squeezing consumers. Core CPI is being pushed higher, limiting room for further BoC rate cuts in 2026.</p>
+      </div>
+      <div class="analysis-card" style="border-left:3px solid var(--red)">
+        <div class="icon risk">📊</div>
+        <h3>Productivity gap</h3>
+        <p>Canada's GDP per capita is above the OECD average but below top performers, with a structural productivity deficit that has widened in recent years. Capital stock per worker remains below the G7 average.</p>
+      </div>
+      <div class="analysis-card" style="border-left:3px solid var(--red)">
+        <div class="icon risk">🏛️</div>
+        <h3>Fiscal deficit expansion</h3>
+        <p>Budget deficit ballooned to ~$80B (2.5% of GDP) as the government responds to trade shocks with stimulus, defence spending increases, and sector support. Fiscal space is narrowing as debt servicing costs rise.</p>
+      </div>
+      <div class="analysis-card" style="border-left:3px solid #2a8a55">
+        <div class="icon oppt">🌍</div>
+        <h3>Leading G7 in FDI inflows</h3>
+        <p>Canada continues to attract the most per-capita foreign direct investment in the G7, reflecting confidence in its institutions, legal framework, and resource base despite near-term headwinds.</p>
+      </div>
+      <div class="analysis-card" style="border-left:3px solid #2a8a55">
+        <div class="icon oppt">💰</div>
+        <h3>Real wages recovering</h3>
+        <p>Hourly wages are rising modestly above inflation for the first time since 2020, providing a small but meaningful boost to household purchasing power and consumer confidence heading into H2 2026.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p><strong>Canada Economic Outlook 2026</strong></p>
+  <p style="margin-top:0.4rem">Sources: Bank of Canada · Statistics Canada · IMF · OECD · Spring Economic Update 2026 · CMHC · TD Economics · BMO Capital Markets</p>
+  <p style="margin-top:0.3rem">For informational purposes only. Not financial advice.</p>
+</footer>
+
+<script>
+const RED = '#C8102E';
+const BLUE = '#1d5fa0';
+const GREEN = '#2a8a55';
+const AMBER = '#D4AF37';
+const GRAY = '#BBBBBB';
+const RED_FADE = 'rgba(200,16,46,0.35)';
+const BLUE_LIGHT = 'rgba(29,95,160,0.12)';
+
+const gridColor = 'rgba(0,0,0,0.06)';
+const tickColor = '#888';
+
+const baseOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+  scales: {
+    x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 } } },
+    y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 } } }
+  }
+};
+
+// GDP Chart
+new Chart(document.getElementById('gdpChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2021','2022','2023','2024','2025','2026F','2027F','2028F'],
+    datasets: [{
+      data: [5.3, 3.8, 1.2, 1.5, 1.4, 1.2, 1.6, 1.7],
+      backgroundColor: ['2021','2022','2023','2024','2025'].map(()=>RED).concat([RED_FADE,RED_FADE,RED_FADE]),
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: { ...baseOpts,
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 } } },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v + '%' }, min: 0, max: 6.5 }
+    }
+  }
+});
+
+// G7 Chart
+new Chart(document.getElementById('g7Chart'), {
+  type: 'bar',
+  data: {
+    labels: ['USA','Canada','UK','France','Italy','Japan','Germany'],
+    datasets: [{
+      data: [1.8, 1.2, 1.0, 0.8, 0.5, 0.5, 0.3],
+      backgroundColor: ['#BBBBBB', RED, '#BBBBBB','#BBBBBB','#BBBBBB','#BBBBBB','#BBBBBB'],
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: { ...baseOpts,
+    indexAxis: 'y',
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v + '%' }, min: 0, max: 2.2 },
+      y: { grid: { display: false }, ticks: { color: tickColor, font: { size: 11 } } }
+    }
+  }
+});
+
+// Unemployment Chart
+new Chart(document.getElementById('unemployChart'), {
+  type: 'line',
+  data: {
+    labels: ['Jan 24','Mar','May','Jul','Sep','Nov','Jan 25','Mar','May','Jul','Sep','Nov','Jan 26','Mar'],
+    datasets: [
+      {
+        label: 'National',
+        data: [5.8, 6.1, 6.2, 6.4, 6.6, 6.7, 6.6, 6.5, 6.8, 6.9, 7.1, 6.8, 6.8, 6.7],
+        borderColor: RED, backgroundColor: 'rgba(200,16,46,0.08)',
+        borderWidth: 2, tension: 0.4, fill: true, pointRadius: 3, pointHoverRadius: 5
+      },
+      {
+        label: 'Youth (15-24)',
+        data: [12.5,12.8,13.0,13.1,13.2,13.3,13.0,12.8,13.0,13.5,13.8,13.3,14.1,14.0],
+        borderColor: AMBER, backgroundColor: 'transparent',
+        borderWidth: 2, tension: 0.4, borderDash: [5,3], pointRadius: 0
+      }
+    ]
+  },
+  options: { ...baseOpts,
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 }, maxRotation: 45 } },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v + '%' }, min: 5, max: 16 }
+    }
+  }
+});
+
+// CPI Chart
+new Chart(document.getElementById('cpiChart'), {
+  type: 'line',
+  data: {
+    labels: ['Jul 25','Aug','Sep','Oct','Nov','Dec','Jan 26','Feb','Mar'],
+    datasets: [
+      {
+        label: 'CPI',
+        data: [1.6, 1.7, 1.9, 2.1, 2.2, 2.3, 1.9, 1.8, 2.4],
+        borderColor: BLUE, backgroundColor: BLUE_LIGHT,
+        borderWidth: 2.5, tension: 0.4, fill: true, pointRadius: 4, pointHoverRadius: 6
+      },
+      {
+        label: 'Target',
+        data: [2,2,2,2,2,2,2,2,2],
+        borderColor: AMBER, borderDash: [6,3],
+        borderWidth: 1.5, pointRadius: 0, fill: false
+      }
+    ]
+  },
+  options: { ...baseOpts,
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } } },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v + '%' }, min: 1.0, max: 3.0 }
+    }
+  }
+});
+
+// Rate Chart
+new Chart(document.getElementById('rateChart'), {
+  type: 'line',
+  data: {
+    labels: ['Jun 24','Jul','Sep','Oct','Dec','Jan 25','Mar','Apr','Jun','Jul','Sep','Nov','Jan 26','Mar'],
+    datasets: [{
+      data: [4.75, 4.50, 4.25, 3.75, 3.25, 3.00, 2.75, 2.75, 2.50, 2.50, 2.25, 2.25, 2.25, 2.25],
+      borderColor: RED, backgroundColor: 'rgba(200,16,46,0.07)',
+      borderWidth: 2.5, stepped: true, fill: true, pointRadius: 4, pointHoverRadius: 5
+    }]
+  },
+  options: { ...baseOpts,
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 }, maxRotation: 45 } },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v + '%' }, min: 1.5, max: 5.5 }
+    }
+  }
+});
+
+// Export chart
+new Chart(document.getElementById('exportChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Energy', 'Autos & parts', 'Metals & minerals', 'Agri-food', 'Other goods'],
+    datasets: [{
+      data: [27, 17, 14, 11, 31],
+      backgroundColor: [RED, BLUE, GREEN, AMBER, GRAY],
+      borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: { ...baseOpts,
+    indexAxis: 'y',
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v + '%' } },
+      y: { grid: { display: false }, ticks: { color: tickColor, font: { size: 11 } } }
+    }
+  }
+});
+
+// House price
+new Chart(document.getElementById('houseChart'), {
+  type: 'line',
+  data: {
+    labels: ['Q1 21','Q3 21','Q1 22','Q3 22','Q1 23','Q3 23','Q1 24','Q3 24','Q1 25','Q3 25','Q1 26F'],
+    datasets: [{
+      data: [100, 118, 136, 118, 108, 106, 109, 111, 108, 105, 104],
+      borderColor: BLUE, backgroundColor: BLUE_LIGHT,
+      borderWidth: 2, tension: 0.4, fill: true, pointRadius: 3,
+      segment: {
+        borderDash: ctx => ctx.p0DataIndex >= 8 ? [5,3] : undefined,
+        borderColor: ctx => ctx.p0DataIndex >= 8 ? RED : BLUE
+      }
+    }]
+  },
+  options: { ...baseOpts,
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 }, maxRotation: 45 } },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v }, min: 90, max: 145 }
+    }
+  }
+});
+
+// Housing starts
+new Chart(document.getElementById('startsChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2020','2021','2022','2023','2024','2025E','2026F'],
+    datasets: [{
+      data: [218, 272, 261, 224, 245, 218, 195],
+      backgroundColor: ['2020','2021','2022','2023','2024'].map(()=>GREEN).concat(['rgba(42,138,85,0.45)','rgba(42,138,85,0.45)']),
+      borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: { ...baseOpts,
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 } } },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v + 'k' }, min: 150, max: 300 }
+    }
+  }
+});
+</script>
+</body>
+</html>
